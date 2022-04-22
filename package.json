@@ -1,0 +1,59 @@
+{
+  "name": "@swordsweeper/react-forms",
+  "version": "0.0.1",
+  "main": "./dist/react-forms.bundle.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage --verbose",
+    "build:dev": "NODE_ENV=development webpack",
+    "build": "NODE_ENV=production webpack --display-error-details --optimize-minimize -p",
+    "start": "NODE_ENV=development webpack-dev-server --config examples/webpack.config.js --hot",
+    "prepare": "npm run build"
+  },
+  "author": "Swordsweeper Industries",
+  "description": "Swordsweeper Industries Shared Form Library",
+  "license": "ISC",
+  "repository": "https://github.com/swordsweeper/react-forms",
+  "peerDependencies": {
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
+    "prop-types": "^15.7.2"
+  },
+  "dependencies": {
+    "classnames": "^2.3.1",
+    "yup": "^0.32.9"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.14.8",
+    "@babel/core": "^7.15.0",
+    "@babel/plugin-proposal-class-properties": "^7.14.5",
+    "@babel/plugin-proposal-decorators": "^7.14.5",
+    "@babel/plugin-syntax-decorators": "^7.14.5",
+    "@babel/plugin-transform-classes": "^7.14.9",
+    "@babel/polyfill": "^7.8.7",
+    "@babel/preset-env": "^7.15.0",
+    "@babel/preset-react": "^7.14.5",
+    "@testing-library/jest-dom": "^5.15.0",
+    "@testing-library/react": "^12.1.2",
+    "babel-loader": "^8.1.0",
+    "css-loader": "^0.28.7",
+    "html-webpack-plugin": "^4.5.2",
+    "node-sass": "^4.9.3",
+    "npm-run-all": "^4.1.1",
+    "postcss-loader": "^2.0.8",
+    "postcss-scss": "^1.0.2",
+    "precss": "^2.0.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
+    "react-hot-loader": "^4.12.19",
+    "react-transform-hmr": "^1.0.4",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.19.0",
+    "url-loader": "^1.0.1",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.1.0",
+    "webpack-dev-server": "^3.1.5"
+  }
+}

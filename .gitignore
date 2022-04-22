@@ -1,0 +1,9 @@
+
+.DS_Store
+.idea/
+.vagrant/
+node_modules/
+htmlcov/
+.coverage
+*.env
+dist/
