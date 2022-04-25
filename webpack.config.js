@@ -51,6 +51,10 @@ module.exports = {
             ".jsx"
         ]
     },
+    externals: {
+        react: "react",
+        reactDOM: "react-dom"
+    },
     devtool: DEVELOPMENT ? "eval-source-map" : "",
     devServer: {
         // contentBase: [
