@@ -1,7 +1,9 @@
+### Disclaimer
+This package is in development and should not be considered stable yet. 
 
 ### Description
 This is a set of common form components and patterns used in projects built by 
-Swordsweeper industries. We try to balance flexibility with ease of use.
+Swordsweeper industries. This library strives to balance flexibility with ease of use.
 
 ### Basic example (Hooks)
 
