@@ -207,8 +207,7 @@ export default function TypeAheadDropdown(props) {
                     onClick={handleToggleSuggestionList}
                     type="button"
                 >
-                    {!showSuggestionList && (<i className="fas fa-chevron-down" />)}
-                    {showSuggestionList && (<i className="fas fa-chevron-up" />)}
+                    <i className={classnames("fas fa-chevron-down", styles.selectButtonIcon, {[styles.expanded]: showSuggestionList})} />
                 </button>
             </div>
             {suggestionListContent && (
