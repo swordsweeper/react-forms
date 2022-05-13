@@ -2,12 +2,13 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Input, useFormHandlers } from "../src"; // @swordsweeper/react-forms
 import TypeAheadDropdown from "../src/TypeAheadDropdown";
+import styles from "./ExampleRoot.scss";
 
 export default function ExampleRoot(props) {
     const {handleUpdate, formData} = useFormHandlers();
     return (
-        <div>
-            <div>
+        <div className={styles.root}>
+            <div className={styles.componentCard}>
                 <h3>Input</h3>
                 <Input
                     name="firstName"
@@ -20,8 +21,8 @@ export default function ExampleRoot(props) {
                 </pre>
             </div>
 
-            <div>
-                <h3>Typeahead</h3>
+            <div className={styles.componentCard}>
+                <h3>Type Ahead</h3>
                 <TypeAheadDropdown
                     name="shape"
                     label="Shape"
