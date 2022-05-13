@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import PropTypes from "prop-types";
 import classnames from "classnames";
 import styles from "./TypeAheadDropdown.scss";
-import find from "lodash/find";
 import map from "lodash/map";
 import uniqBy from "lodash/uniqBy";
 import debounce from "lodash/debounce";
@@ -13,86 +12,112 @@ export default function TypeAheadDropdown(props) {
     const [searchValue, setSearchValue] = useState(null);
     const [showSuggestionList, setShowSuggestionList] = useState(false);
     const [showTop, setShowTop] = useState(false);
+    const [isLoadingSearchResults, setIsLoadingSearchResults] = useState(false);
     const rootRef = useRef();
+    const currentSearchValue = searchValue !== null ? searchValue : (props.value || "");
 
     useEffect(() => {
         const handleWindowClick = () => {
-            setSuggestions([]);
-            setShowSuggestionList(false);
-            setSearchValue(null);
+            if (showSuggestionList) {
+                // Close the suggestion list if it is open
+                setSuggestions([]);
+                setShowSuggestionList(false);
+            }
         }
         window.addEventListener("click", handleWindowClick);
         return () => {
             window.removeEventListener("click", handleWindowClick);
         };
-    }, []);
+    }, [showSuggestionList]);
 
     useEffect(() => {
         setShowTop(window.innerHeight / 2 < rootRef.current.getBoundingClientRect().top);
     }, [showSuggestionList]);
 
-    const suggestionLabel = find(props.options, {value: props.value})?.label;
-    const currentSearchValue = searchValue !== null ? searchValue : suggestionLabel || "";
-
-    const getFilteredOptions = (value) => {
-        if (value) {
-            const searchString = value.toLowerCase();
-            return props.options.filter(option => option.label.toLowerCase().includes(searchString));
-        } else {
-            return props.options;
-        }
-    }
-
-    const handleChangeSearch = (e) => {
-        let newSuggestions;
-        const value = e.target.value;
-        if (value.length > 0) {
-            newSuggestions = getFilteredOptions(value);
-        } else {
-            newSuggestions = props.options;
-        }
-
+    const applySuggestions = (newSuggestions) => {
         setSuggestions(newSuggestions);
+        // Show the suggestion list if there are matches
         const hasMatches = newSuggestions.length > 0;
         setShowSuggestionList(hasMatches);
         if (props.onAddNewOption) {
             setShowNoMatchesFound(!hasMatches);
         }
-
-        setSearchValue(value);
-        // props.onChange({
-        //     name: props.name,
-        //     value,
-        // });
     };
 
-    const onSuggestionSelected = (selectedValue) => {
+    const doSearch = (searchTerm, searchString) => {
+        return props.onSearch.options.filter(option => option[searchTerm].toLowerCase().includes(searchString));
+    };
+
+    const debouncedSearch = useCallback(debounce(async (searchTerm) => {
+        try {
+            const { apiMethod, searchFilters } = props.onSearch;
+            const combinedSearchFilters = {
+                ...searchFilters,
+                search: searchTerm,
+            };
+            const response = await apiMethod(combinedSearchFilters);
+            applySuggestions(response.body.results);
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setIsLoadingSearchResults(false);
+        }
+    }, 500), [...Object.values(props.onSearch.searchFilters || {})]);
+
+    const handleSearch = (searchTerm) => {
+        let newSuggestions = [];
+        if (!!props.onSearch?.apiMethod) {
+            // Do async function call
+            setIsLoadingSearchResults(true);
+            debouncedSearch(searchTerm);
+        } else {
+            if (searchTerm.length > 0) {
+                // Do search inside component with passed in options & search fields
+                const { searchFields } = props.onSearch;
+                const searchString = searchTerm.toLowerCase();
+                if (Array.isArray(searchFields)) {
+                    // Do a search with all of the search fields
+                    searchFields.map(searchTerm => {
+                        newSuggestions.push(...doSearch(searchTerm, searchString))
+                    });
+                    // Only use unique values
+                    newSuggestions = uniqBy(newSuggestions, "id");
+                } else {
+                    newSuggestions = doSearch(searchFields, searchString);
+                }
+            } else {
+                newSuggestions = props.onSearch.options;
+            }
+            
+            applySuggestions(newSuggestions);
+        }
+        setSearchValue(searchTerm);
+    };
+
+    const onSuggestionSelected = (selection) => {
+        const value = selection[props.onSelectReturnField]; // By default the selected item's ID is returned
         setShowSuggestionList(false);
         setShowNoMatchesFound(false);
-        setSearchValue(null);
+        setSearchValue(selection[props.onSelectDisplayField]);
         setSuggestions([]);
         props.onChange({
             name: props.name,
-            value: selectedValue,
+            value,
         });
+        if (props.onSuggestionSelected) {
+            props.onSuggestionSelected(selection);
+        }
     };
 
     const handleToggleSuggestionList = () => {
         if (!showSuggestionList) {
-            setSuggestions(getFilteredOptions(currentSearchValue));
+            handleSearch(currentSearchValue);
             setShowSuggestionList(true);
             setShowNoMatchesFound(false);
-        } else if (props.value) {
-            setSuggestions(props.options);
-            setSearchValue(null);
-            props.onChange({
-                name: props.name,
-                value: null,
-            });
         } else {
-            setSuggestions([]);
             setShowSuggestionList(false);
             setShowNoMatchesFound(false);
+            setSuggestions(null);
             setSearchValue(null);
             props.onChange({
                 name: props.name,
@@ -103,7 +128,7 @@ export default function TypeAheadDropdown(props) {
 
     const handleFocus = () => {
         setShowSuggestionList(true);
-        setSuggestions(getFilteredOptions(currentSearchValue));
+        handleSearch(currentSearchValue);
     }
 
     const handleAddNewClick = async () => {
@@ -112,7 +137,7 @@ export default function TypeAheadDropdown(props) {
             // Create new option (api call)
             const response = await create(currentSearchValue);
             const createdOption = response.body;
-            onSuggestionSelected(createdOption.id); // Select the newly created option
+            onSuggestionSelected(createdOption); // Select the newly created option
             if (afterCreate) {
                 afterCreate(createdOption); // Callback function with new data (update redux)
             }
@@ -120,6 +145,39 @@ export default function TypeAheadDropdown(props) {
             console.error(e);
         }
     };
+
+    let suggestionListContent;
+    if (isLoadingSearchResults) {
+        suggestionListContent = (
+            <span>
+                Loading
+            </span>
+        );
+    } else if (suggestions && showSuggestionList) {
+        suggestionListContent = map(suggestions, (suggestion) => (
+            <div
+                className={styles.suggestionItem}
+                key={suggestion.id}
+                onClick={() => onSuggestionSelected(suggestion)}
+            >
+                {props.renderSuggestion(suggestion)}
+            </div>
+        ));
+    } else if (showNoMatchesFound) {
+        suggestionListContent = (
+            <div className={styles.suggestionItem}>
+                <div className="margin-bottom-10">
+                    No matches found for <b>{currentSearchValue}</b>.
+                </div>
+                <div
+                    className="link"
+                    onClick={handleAddNewClick}
+                >
+                    <i className="fas fa--plus" /> Add new
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div
@@ -138,13 +196,10 @@ export default function TypeAheadDropdown(props) {
                 <input
                     value={currentSearchValue}
                     data-testid="type-ahead-dropdown-input"
-                    onChange={handleChangeSearch}
+                    onChange={(e) => handleSearch(e.target.value)}
                     autoFocus={props.autoFocus}
                     placeholder={props.placeholder}
                     type={props.type}
-                    className={classnames({
-                        [styles.fixedInput]: !searchValue && suggestionLabel
-                    })}
                     onFocus={handleFocus}
                 />
                 <button
@@ -153,40 +208,14 @@ export default function TypeAheadDropdown(props) {
                     type="button"
                 >
                     {!showSuggestionList && (<i className="fas fa-chevron-down" />)}
-                    {showSuggestionList && (<i className="fas fa-times" />)}
+                    {showSuggestionList && (<i className="fas fa-chevron-up" />)}
                 </button>
             </div>
-            {showSuggestionList && (
+            {suggestionListContent && (
                 <div className={classnames(styles.suggestionList, {
                     [styles.top]: showTop,
                 })}>
-                    {map(suggestions, (suggestion) => (
-                        <div
-                            className={styles.suggestionItem}
-                            key={suggestion.id}
-                            onClick={() => onSuggestionSelected(suggestion.value)}
-                        >
-                            {suggestion.label}
-                        </div>
-                    ))}
-                </div>
-            )}
-
-            {showNoMatchesFound && (
-                <div className={classnames(styles.suggestionList, {
-                    [styles.top]: showTop,
-                })}>
-                    <div className={styles.suggestionItem}>
-                        <div className="margin-bottom-10">
-                            No matches found for <b>{currentSearchValue}</b>.
-                        </div>
-                        <div
-                            className="link"
-                            onClick={handleAddNewClick}
-                        >
-                            <i className="fas fa--plus" /> Add new
-                        </div>
-                    </div>
+                    {suggestionListContent}
                 </div>
             )}
         </div>
@@ -203,16 +232,33 @@ TypeAheadDropdown.propTypes = {
     autoFocus: PropTypes.bool,
     placeholder: PropTypes.string,
     type: PropTypes.string,
+    renderSuggestion: PropTypes.func.isRequired,
+    onSuggestionSelected: PropTypes.func,
+    onSelectDisplayField: PropTypes.string,
+    onSelectReturnField: PropTypes.string,
     onAddNewOption: PropTypes.shape({
         create: PropTypes.func,
         afterCreate: PropTypes.func,
     }),
-    options: PropTypes.arrayOf(PropTypes.shape({
-        label: PropTypes.string.isRequired,
-        value: PropTypes.any.isRequired,
-    })).isRequired,
+    onSearch: PropTypes.oneOfType([
+        // For in-component-searching (options are already loaded)
+        PropTypes.shape({
+            options: PropTypes.array,
+            searchFields: PropTypes.oneOfType([
+                PropTypes.string,
+                PropTypes.arrayOf(PropTypes.string),
+            ]),
+        }),
+        // Can be a callback function (asynchronous api searching)
+        PropTypes.shape({
+            apiMethod: PropTypes.func,
+            searchFilters: PropTypes.object,
+        }),
+    ]).isRequired,
 };
 
 TypeAheadDropdown.defaultProps = {
     type: "text",
+    onSelectReturnField: "id",
+    onSelectDisplayField: "name",
 };
