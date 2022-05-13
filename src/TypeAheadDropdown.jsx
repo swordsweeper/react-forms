@@ -1,9 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import PropTypes from "prop-types";
 import classnames from "classnames";
 import styles from "./TypeAheadDropdown.scss";
 import find from "lodash/find";
 import map from "lodash/map";
+import uniqBy from "lodash/uniqBy";
+import debounce from "lodash/debounce";
 
 export default function TypeAheadDropdown(props) {
     const [suggestions, setSuggestions] = useState([]);
@@ -150,8 +152,8 @@ export default function TypeAheadDropdown(props) {
                     onClick={handleToggleSuggestionList}
                     type="button"
                 >
-                    {!showSuggestionList && (<i className="mdi mdi-chevron-down" />)}
-                    {showSuggestionList && (<i className="mdi mdi-close" />)}
+                    {!showSuggestionList && (<i className="fas fa-chevron-down" />)}
+                    {showSuggestionList && (<i className="fas fa-times" />)}
                 </button>
             </div>
             {showSuggestionList && (
@@ -182,7 +184,7 @@ export default function TypeAheadDropdown(props) {
                             className="link"
                             onClick={handleAddNewClick}
                         >
-                            <i className="mdi mdi-plus" /> Add new
+                            <i className="fas fa--plus" /> Add new
                         </div>
                     </div>
                 </div>
