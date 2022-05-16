@@ -173,7 +173,7 @@ export default function TypeAheadDropdown(props) {
                     className="link"
                     onClick={handleAddNewClick}
                 >
-                    <i className="fas fa--plus" /> Add new
+                    <i className="fas fa-plus" /> Add new
                 </div>
             </div>
         );
