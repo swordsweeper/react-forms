@@ -2,10 +2,10 @@ import React, { useState, useCallback } from "react";
 import PropTypes from "prop-types";
 import debounce from "lodash/debounce";
 import TypeAheadDropdown from "./TypeAheadDropdown";
-import styles from "./AsyncTypeAhead.scss";
+import styles from "./AsyncSearchTypeAhead.scss";
 import classnames from "classnames";
 
-export default function AsyncTypeAhead(props) {
+export default function AsyncSearchTypeAhead(props) {
     const [suggestions, setSuggestions] = useState([]);
     const [showNoMatchesFound, setShowNoMatchesFound] = useState(false);
     const [isLoadingSearchResults, setIsLoadingSearchResults] = useState(false);
@@ -57,7 +57,7 @@ export default function AsyncTypeAhead(props) {
     );
 }
 
-AsyncTypeAhead.propTypes = {
+AsyncSearchTypeAhead.propTypes = {
     label: PropTypes.string,
     name: PropTypes.string,
     invalid: PropTypes.bool,
@@ -74,6 +74,6 @@ AsyncTypeAhead.propTypes = {
     onSelect: PropTypes.func.isRequired,
 };
 
-AsyncTypeAhead.defaultProps = {
+AsyncSearchTypeAhead.defaultProps = {
     type: "text",
 };

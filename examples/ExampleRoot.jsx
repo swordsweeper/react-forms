@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { Input, useFormHandlers } from "../src"; // @swordsweeper/react-forms
 import QuickSearchTypeAhead from "../src/typeahead/QuickSearchTypeAhead";
-import AsyncTypeAhead from "../src/typeahead/AsyncTypeAhead";
+import AsyncSearchTypeAhead from "../src/typeahead/AsyncSearchTypeAhead";
 import styles from "./ExampleRoot.scss";
 import map from "lodash/map";
 
@@ -114,7 +114,7 @@ export default function ExampleRoot(props) {
                 />
 
                 <h4>Asynchronous Search</h4>
-                <AsyncTypeAhead
+                <AsyncSearchTypeAhead
                     label="Shape 2"
                     name="shape2"
                     onSelect={handleUpdate}
@@ -125,7 +125,7 @@ export default function ExampleRoot(props) {
                     Api called {typeAheadApiHitCounter} times
                 </pre>
                 <ComponentPropTypes
-                    component={AsyncTypeAhead}
+                    component={AsyncSearchTypeAhead}
                 />
 
                 <pre>
