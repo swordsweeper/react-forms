@@ -1,7 +1,8 @@
 import React, { useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { Input, useFormHandlers } from "../src"; // @swordsweeper/react-forms
-import TypeAheadDropdown from "../src/TypeAheadDropdown";
+import QuickSearchTypeAhead from "../src/typeahead/QuickSearchTypeAhead";
+import AsyncTypeAhead from "../src/typeahead/AsyncTypeAhead";
 import styles from "./ExampleRoot.scss";
 import map from "lodash/map";
 
@@ -99,41 +100,37 @@ export default function ExampleRoot(props) {
 
             <div className={styles.componentCard}>
                 <h3>Type Ahead</h3>
-                <h4>Instantaneous Search</h4>
-                <TypeAheadDropdown
-                    name="shape1"
+                <h4>Quick Search</h4>
+                <QuickSearchTypeAhead
                     label="Shape 1"
-                    value={formData.shape1}
-                    onChange={handleUpdate}
-                    onSearch={{
-                        options: mockOptions,
-                        searchFields: ["name", "sides"]
-                    }}
+                    name="shape1"
+                    onSelect={handleUpdate}
+                    options={mockOptions}
+                    searchFields={["name", "sides"]}
                     renderSuggestion={(shape) => `${shape.name} - (${shape.sides} sides)`}
+                />
+                <ComponentPropTypes
+                    component={QuickSearchTypeAhead}
                 />
 
                 <h4>Asynchronous Search</h4>
-                <TypeAheadDropdown
-                    name="shape2"
+                <AsyncTypeAhead
                     label="Shape 2"
-                    value={formData.shape2}
-                    onChange={handleUpdate}
-                    onSearch={{
-                        apiMethod: mockApiSearchMethod,
-                        searchFilters: {}
-                    }}
+                    name="shape2"
+                    onSelect={handleUpdate}
+                    apiMethod={mockApiSearchMethod}
                     renderSuggestion={(shape) => `${shape.name} - (${shape.sides} sides)`}
                 />
                 <pre>
                     Api called {typeAheadApiHitCounter} times
                 </pre>
+                <ComponentPropTypes
+                    component={AsyncTypeAhead}
+                />
+
                 <pre>
                     {JSON.stringify(formData)}
                 </pre>
-
-                <ComponentPropTypes
-                    component={TypeAheadDropdown}
-                />
             </div>
         </div>
     );

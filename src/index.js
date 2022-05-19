@@ -1,10 +1,12 @@
 
 import Input from "./Input";
-import TypeAheadDropdown from "./TypeAheadDropdown";
+import QuickSearchTypeAhead from "./typeahead/QuickSearchTypeAhead";
+import AsyncTypeAhead from "./typeahead/AsyncTypeAhead";
 import useFormHandlers from "./useFormHandlers";
 
 export {
     Input,
-    TypeAheadDropdown,
+    QuickSearchTypeAhead,
+    AsyncTypeAhead,
     useFormHandlers,
 };

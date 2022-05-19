@@ -1,6 +1,12 @@
 
 .typeAheadRoot {
   position: relative;
+
+  &.invalid {
+    input {
+      outline-color: red;
+    }
+  }
 }
 
 .suggestionList {
@@ -24,6 +30,10 @@
   &:hover {
     background-color: darken(white, 5%);
   }
+
+  &:focus {
+    background-color: darken(white, 10%);
+  }
 }
 
 .inputContainer {
@@ -37,7 +47,7 @@
 
   .selectButton {
     position: absolute;
-    right: 1em;
+    right: 0;
     top: 50%;
     transform: translateY(-50%);
     height: 2em;
@@ -63,4 +73,8 @@
       }
     }
   }
+}
+
+.selectedSuggestion {
+  cursor: pointer;
 }
