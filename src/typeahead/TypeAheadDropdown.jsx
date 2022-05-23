@@ -5,7 +5,7 @@ import styles from "./TypeAheadDropdown.scss";
 import map from "lodash/map";
 
 export default function TypeAheadDropdown(props) {
-    const [searchValue, setSearchValue] = useState("");
+    const [searchValue, setSearchValue] = useState(props.initialValue);
     const [showSuggestionList, setShowSuggestionList] = useState(false);
     const [selectedSuggestion, setSelectedSuggestion] = useState(null);
     const [focusedSuggestion, setFocusedSuggestion] = useState(null);
@@ -158,8 +158,10 @@ TypeAheadDropdown.propTypes = {
     renderSuggestion: PropTypes.func.isRequired,
     onSelect: PropTypes.func.isRequired,
     onSearch: PropTypes.func.isRequired,
+    initialValue: PropTypes.string,
 };
 
 TypeAheadDropdown.defaultProps = {
     type: "text",
+    initialValue: "",
 };
