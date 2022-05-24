@@ -65,6 +65,16 @@ export default function TypeAheadDropdown(props) {
         setIsEditingSelection(false);
     };
 
+    const handleClearSelection = () => {
+        setSelectedSuggestion(null);
+        setSearchValue("");
+        props.onSelect({
+            name: props.name,
+            value: "",
+        });
+        setShowSuggestionList(false);
+    };
+
     const handleSearchValueChanged = (e) => {
         const { value } = e.target;
         setSearchValue(value);
@@ -81,6 +91,17 @@ export default function TypeAheadDropdown(props) {
             }
         }
     };
+
+    const clearSelectionButton = (
+        <button
+            className={styles.clearSelectionButton}
+            onClick={handleClearSelection}
+            type="button"
+            title="Clear Selection"
+        >
+            <i className="fas fa-times" />
+        </button>
+    );
 
     return (
         <div
@@ -99,6 +120,7 @@ export default function TypeAheadDropdown(props) {
                     className={styles.selectedSuggestion}
                 >
                     {props.renderSuggestion(selectedSuggestion)}
+                    {clearSelectionButton}
                 </div>
             ) : (
                 <div onKeyDown={handleCheckEnterPress}>
@@ -121,8 +143,8 @@ export default function TypeAheadDropdown(props) {
                         >
                             <i className={classnames("fas fa-chevron-down", styles.selectButtonIcon, {[styles.expanded]: showSuggestionList})} />
                         </button>
+                        {clearSelectionButton}
                     </div>
-
                     {(showSuggestionList && props.suggestions.length > 0) && (
                         <div className={classnames(styles.suggestionList, {
                             [styles.top]: showTop,
