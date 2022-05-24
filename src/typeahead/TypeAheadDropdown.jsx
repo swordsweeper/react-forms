@@ -112,6 +112,7 @@ export default function TypeAheadDropdown(props) {
                             onFocus={handleFocus}
                             placeholder={props.placeholder}
                             type={props.type}
+                            disabled={props.disabled}
                         />
                         <button
                             className={styles.selectButton}
@@ -150,6 +151,7 @@ TypeAheadDropdown.propTypes = {
     label: PropTypes.string,
     name: PropTypes.string,
     invalid: PropTypes.bool,
+    disabled: PropTypes.bool,
     isRequired: PropTypes.bool,
     autoFocus: PropTypes.bool,
     placeholder: PropTypes.string,
