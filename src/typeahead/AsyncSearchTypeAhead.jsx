@@ -73,6 +73,7 @@ AsyncSearchTypeAhead.propTypes = {
     // }),
     apiMethod: PropTypes.func.isRequired,
     onSelect: PropTypes.func.isRequired,
+    initialValue: PropTypes.string,
 };
 
 AsyncSearchTypeAhead.defaultProps = {
