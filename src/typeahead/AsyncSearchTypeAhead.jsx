@@ -59,7 +59,7 @@ export default function AsyncSearchTypeAhead(props) {
             onSelect: handleAddOption,
             customRender: () => (
                 <div className={styles.addOptionContainer}>
-                    <i className="fas fa-plus" /> <span className={styles.addOptionPrompt}>Add New "{lastSearchTerm}"</span>
+                    Create "<span className={styles.searchTerm}>{lastSearchTerm}</span>"
                     {isAddingNewOption && (
                         <i className={classnames("fad fa-spinner-third", styles.addOptionLoader)} />
                     )}
