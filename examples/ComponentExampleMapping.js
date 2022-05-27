@@ -36,6 +36,7 @@ export default {
                 onSelect={handleUpdate}
                 apiMethod={mockApiSearchMethod}
                 renderSuggestion={renderFn}
+                onAddOption={mockAddOption}
             />
         `
     }

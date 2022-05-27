@@ -92,12 +92,14 @@ const ComponentInformation = (props) => {
 
 export default function ExampleRoot(props) {
     const {handleUpdate, formData} = useFormHandlers();
-    const [typeAheadApiHitCounter, setTypeAheadHitCounter] = useState(0);
+    const [typeAheadApiHitCounter, setTypeAheadApiHitCounter] = useState(0);
+    const [typeAheadCreateNewHitCounter, setTypeAheadCreateNewHitCounter] = useState(0);
     const typeAheadApiHitRef = useRef(0);
+    const typeAheadCreateNewHitRef = useRef(0);
 
     const mockApiSearchMethod = ({ search }) => {
         const newHitCount = typeAheadApiHitRef.current + 1;
-        setTypeAheadHitCounter(newHitCount);
+        setTypeAheadApiHitCounter(newHitCount);
         typeAheadApiHitRef.current = newHitCount;
         const searchTerm = search.toLowerCase();
         const searchResults = mockOptions.filter(option => option.name.toLowerCase().includes(searchTerm));
@@ -107,6 +109,23 @@ export default function ExampleRoot(props) {
             }
         };
         return mockResponse;
+    };
+
+    const mockAddOption = (name) => {
+        return new Promise((resolve, reject) => {
+            const newOption = {
+                name,
+                id: `created_option_${typeAheadCreateNewHitRef.current}_${name}`,
+                sides: "unknown",
+            };
+            setTimeout(() => {
+                mockOptions.push(newOption);
+                const newHitCount = typeAheadCreateNewHitRef.current + 1;
+                setTypeAheadCreateNewHitCounter(newHitCount);
+                typeAheadCreateNewHitRef.current = newHitCount;
+                resolve(newOption);
+            }, 1000);
+        });
     };
 
     return (
@@ -147,9 +166,13 @@ export default function ExampleRoot(props) {
                         onSelect={handleUpdate}
                         apiMethod={mockApiSearchMethod}
                         renderSuggestion={(shape) => `${shape.name} - (${shape.sides} sides)`}
+                        onAddOption={mockAddOption}
                     />
                     <pre>
                         Api called {typeAheadApiHitCounter} times
+                    </pre>
+                    <pre>
+                        {typeAheadCreateNewHitCounter} new entities created
                     </pre>
                     <ComponentInformation
                         component={AsyncSearchTypeAhead}

@@ -7,8 +7,30 @@
   }
 }
 
+.addOptionContainer {
+  display: flex;
+  align-items: center;
+
+  .addOptionPrompt {
+    margin-left: 0.5em;
+  }
+
+  .addOptionLoader {
+    margin-left: 0.5em;
+    animation: spin 1.5s infinite;
+  }
+}
+
 @keyframes shimmer {
   100% {
     -webkit-mask-position: left;
+  }
+}
+
+@keyframes spin { 
+  from { 
+      transform: rotate(0deg); 
+  } to { 
+      transform: rotate(360deg); 
   }
 }

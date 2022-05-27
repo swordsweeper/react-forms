@@ -57,12 +57,16 @@ export default function TypeAheadDropdown(props) {
     };
 
     const handleSelectSuggestion = (selection) => {
-        setSelectedSuggestion(selection)
-        props.onSelect({
-            name: props.name,
-            value: selection,
-        });
-        setIsEditingSelection(false);
+        if (selection.onSelect) {
+            selection.onSelect();
+        } else {
+            setSelectedSuggestion(selection)
+            props.onSelect({
+                name: props.name,
+                value: selection,
+            });
+            setIsEditingSelection(false);
+        }
     };
 
     const handleClearSelection = () => {
@@ -158,7 +162,11 @@ export default function TypeAheadDropdown(props) {
                                     tabIndex="0"
                                     onFocus={() => handleSuggestionFocused(suggestion)}
                                 >
-                                    {props.renderSuggestion(suggestion)}
+                                    {suggestion.customRender ? (
+                                        suggestion.customRender(suggestion)
+                                    ) : (
+                                        props.renderSuggestion(suggestion)
+                                    )}
                                 </div>
                             ))}
                         </div>
