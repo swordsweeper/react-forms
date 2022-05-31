@@ -58,6 +58,7 @@ QuickSearchTypeAhead.propTypes = {
     ]).isRequired,
     onSelect: PropTypes.func.isRequired,
     initialValue: PropTypes.string,
+    id: PropTypes.string,
 };
 
 QuickSearchTypeAhead.defaultProps = {

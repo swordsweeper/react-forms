@@ -7,8 +7,9 @@ import classnames from "classnames";
 
 export default function AsyncSearchTypeAhead(props) {
     const [suggestions, setSuggestions] = useState([]);
-    const [showNoMatchesFound, setShowNoMatchesFound] = useState(false);
     const [isLoadingSearchResults, setIsLoadingSearchResults] = useState(false);
+    const [isAddingNewOption, setIsAddingNewOption] = useState(false);
+    const [lastSearchTerm, setLastSearchTerm] = useState("");
 
     const debouncedSearch = useCallback(debounce(async (searchTerm) => {
         try {
@@ -29,28 +30,50 @@ export default function AsyncSearchTypeAhead(props) {
         // Do async function call
         setIsLoadingSearchResults(true);
         debouncedSearch(searchTerm);
+        setLastSearchTerm(searchTerm);
     };
 
-    // const handleAddNewClick = async () => {
-    //     const { create, afterCreate } = props.onAddNewOption;
-    //     try {
-    //         // Create new option (api call)
-    //         const response = await create(currentSearchValue);
-    //         const createdOption = response.body;
-    //         onSuggestionSelected(createdOption); // Select the newly created option
-    //         if (afterCreate) {
-    //             afterCreate(createdOption); // Callback function with new data (update redux)
-    //         }
-    //     } catch (e) {
-    //         console.error(e);
-    //     }
-    // };
+    const handleAddOption = async () => {
+        if (!isAddingNewOption) {
+            setIsAddingNewOption(true);
+            try {
+                const newOption = await props.onAddOption(lastSearchTerm);
+                if (newOption) {
+                    setSuggestions([
+                        ...suggestions,
+                        newOption,
+                    ]);
+                    return newOption;
+                }
+            } catch (e) {
+                console.error(e);
+            } finally {
+                setIsAddingNewOption(false);
+            }
+        }
+    };
+
+    const suggestionsList = (lastSearchTerm && props.onAddOption) ? [
+        ...suggestions,
+        {
+            id: "add-new-suggestion",
+            onSelect: handleAddOption,
+            customRender: () => (
+                <div className={styles.addOptionContainer}>
+                    Create "<span className={styles.searchTerm}>{lastSearchTerm}</span>"
+                    {isAddingNewOption && (
+                        <i className={classnames("fad fa-spinner-third", styles.addOptionLoader)} />
+                    )}
+                </div>
+            )
+        }
+    ] : suggestions;
 
     return (
         <div className={classnames({[styles.loading]: isLoadingSearchResults})}>
             <TypeAheadDropdown
                 onSearch={handleSearch}
-                suggestions={isLoadingSearchResults ? [] : suggestions}
+                suggestions={isLoadingSearchResults ? [] : suggestionsList}
                 {...props}
             />
         </div>
@@ -67,13 +90,11 @@ AsyncSearchTypeAhead.propTypes = {
     placeholder: PropTypes.string,
     type: PropTypes.string,
     renderSuggestion: PropTypes.func.isRequired,
-    // onAddNewOption: PropTypes.shape({
-    //     create: PropTypes.func,
-    //     afterCreate: PropTypes.func,
-    // }),
     apiMethod: PropTypes.func.isRequired,
     onSelect: PropTypes.func.isRequired,
     initialValue: PropTypes.string,
+    onAddOption: PropTypes.func,
+    id: PropTypes.string,
 };
 
 AsyncSearchTypeAhead.defaultProps = {
