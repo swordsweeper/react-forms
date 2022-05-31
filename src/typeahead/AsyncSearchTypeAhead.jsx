@@ -94,6 +94,7 @@ AsyncSearchTypeAhead.propTypes = {
     onSelect: PropTypes.func.isRequired,
     initialValue: PropTypes.string,
     onAddOption: PropTypes.func,
+    id: PropTypes.string,
 };
 
 AsyncSearchTypeAhead.defaultProps = {

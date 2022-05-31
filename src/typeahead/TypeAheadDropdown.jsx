@@ -126,6 +126,7 @@ export default function TypeAheadDropdown(props) {
             className={classnames(styles.typeAheadRoot, {[styles.invalid]: props.invalid})}
             onClick={(e) => e.stopPropagation()}
             ref={rootRef}
+            id={props.id}
         >
             {props.label && (
                 <label data-testid="label">
@@ -165,9 +166,12 @@ export default function TypeAheadDropdown(props) {
                         {clearSelectionButton}
                     </div>
                     {(showSuggestionList && props.suggestions.length > 0) && (
-                        <div className={classnames(styles.suggestionList, {
-                            [styles.top]: showTop,
-                        })}>
+                        <div
+                            className={classnames(styles.suggestionList, {
+                                [styles.top]: showTop,
+                            })}
+                            id={`${props.id}-suggestion-list`}
+                        >
                             {map(props.suggestions, (suggestion) => (
                                 <div
                                     className={styles.suggestionItem}
@@ -205,9 +209,11 @@ TypeAheadDropdown.propTypes = {
     onSelect: PropTypes.func.isRequired,
     onSearch: PropTypes.func.isRequired,
     initialValue: PropTypes.string,
+    id: PropTypes.string,
 };
 
 TypeAheadDropdown.defaultProps = {
     type: "text",
     initialValue: "",
+    id: "type-ahead-dropdown"
 };
