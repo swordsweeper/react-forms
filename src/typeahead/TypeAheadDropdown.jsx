@@ -8,6 +8,7 @@ export default function TypeAheadDropdown(props) {
     const [searchValue, setSearchValue] = useState(props.initialValue);
     const [showSuggestionList, setShowSuggestionList] = useState(false);
     const [selectedSuggestion, setSelectedSuggestion] = useState(null);
+    const [shouldAutoFocus, setShouldAutoFocus] = useState(false);
     const [focusedSuggestion, setFocusedSuggestion] = useState(null);
     const [isEditingSelection, setIsEditingSelection] = useState(true);
     const [showTop, setShowTop] = useState(false);
@@ -56,16 +57,24 @@ export default function TypeAheadDropdown(props) {
         setFocusedSuggestion(selection);
     };
 
-    const handleSelectSuggestion = (selection) => {
+    const handleSetSelection = (selection) => {
+        setSelectedSuggestion(selection);
+        setShouldAutoFocus(true);
+        props.onSelect({
+            name: props.name,
+            value: selection,
+        });
+        setIsEditingSelection(false);
+    };
+
+    const handleSelectSuggestion = async (selection) => {
         if (selection.onSelect) {
-            selection.onSelect();
+            const newOption = await selection.onSelect();
+            if (newOption) {
+                handleSetSelection(newOption);
+            }
         } else {
-            setSelectedSuggestion(selection)
-            props.onSelect({
-                name: props.name,
-                value: selection,
-            });
-            setIsEditingSelection(false);
+            handleSetSelection(selection);
         }
     };
 
@@ -76,15 +85,20 @@ export default function TypeAheadDropdown(props) {
             name: props.name,
             value: "",
         });
-        setShowSuggestionList(false);
+        if (inputRef.current) {
+            inputRef.current.focus();
+        } else {
+            setShouldAutoFocus(true);
+        }
+        props.onSearch("");
     };
 
     const handleSearchValueChanged = (e) => {
         const { value } = e.target;
         setSearchValue(value);
         props.onSearch(value);
-
         setSelectedSuggestion(null);
+        setShouldAutoFocus(false);
     };
 
     const handleCheckEnterPress = (e) => {
@@ -134,7 +148,7 @@ export default function TypeAheadDropdown(props) {
                             value={searchValue}
                             data-testid="type-ahead-dropdown-input"
                             onChange={handleSearchValueChanged}
-                            autoFocus={props.autoFocus || selectedSuggestion}
+                            autoFocus={props.autoFocus || shouldAutoFocus}
                             onFocus={handleFocus}
                             placeholder={props.placeholder}
                             type={props.type}

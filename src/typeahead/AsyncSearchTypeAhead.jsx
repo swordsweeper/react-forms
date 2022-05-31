@@ -43,6 +43,7 @@ export default function AsyncSearchTypeAhead(props) {
                         ...suggestions,
                         newOption,
                     ]);
+                    return newOption;
                 }
             } catch (e) {
                 console.error(e);
