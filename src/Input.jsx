@@ -33,7 +33,11 @@ export default function Input(props) {
                 "form-group-inline": props.inline,
             })}
         >
-            {!!props.label && (<label>{props.label}</label>)}
+            {props.label && (
+                <label data-testid="label">
+                    {props.label} {props.isRequired && <i className="fa fa-asterisk text-warn text-sm" /> }
+                </label>
+            )}
             <input
                 type={props.inputType || "text"}
                 onChange={handleChange}
@@ -61,5 +65,6 @@ Input.propTypes = {
     inputType: PropTypes.oneOf(["email", "text", "number"]),
     inline: PropTypes.bool,
     disabled: PropTypes.bool,
+    isRequired: PropTypes.bool,
 };
 
