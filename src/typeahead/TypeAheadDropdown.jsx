@@ -127,6 +127,7 @@ export default function TypeAheadDropdown(props) {
             onClick={(e) => e.stopPropagation()}
             ref={rootRef}
             id={props.id}
+            data-testid="typeahead-root"
         >
             {props.label && (
                 <label data-testid="label">
@@ -137,6 +138,7 @@ export default function TypeAheadDropdown(props) {
                 <div
                     onClick={() => setIsEditingSelection(true)}
                     className={styles.selectedSuggestion}
+                    data-testid="selected-suggestion"
                 >
                     {props.renderSuggestion(selectedSuggestion)}
                     {clearSelectionButton}
@@ -160,6 +162,7 @@ export default function TypeAheadDropdown(props) {
                             onClick={handleToggleSuggestionList}
                             type="button"
                             tabIndex="-1"
+                            data-testid="dropdown-toggle-suggestion-list-button"
                         >
                             <i className={classnames("fas fa-chevron-down", styles.selectButtonIcon, {[styles.expanded]: showSuggestionList})} />
                         </button>
@@ -171,6 +174,7 @@ export default function TypeAheadDropdown(props) {
                                 [styles.top]: showTop,
                             })}
                             id={`${props.id}-suggestion-list`}
+                            data-testid="typeahead-suggestion-list"
                         >
                             {map(props.suggestions, (suggestion) => (
                                 <div

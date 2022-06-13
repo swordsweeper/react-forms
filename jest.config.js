@@ -22,5 +22,8 @@ module.exports = {
     testEnvironment: "jsdom",
     modulePaths: [
         path.resolve(__dirname, "node_modules"),
-    ]
+    ],
+    moduleNameMapper: {
+        '\\.(css|less|scss)$': '<rootDir>/__mocks__/styleMock.js',
+    },
 };
