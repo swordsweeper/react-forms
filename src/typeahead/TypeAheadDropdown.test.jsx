@@ -3,6 +3,17 @@ import React from "react";
 import { fireEvent, render } from "@testing-library/react";
 import TypeAheadDropdown from "./TypeAheadDropdown";
 
+const mockSuggestions = [
+    {
+        id: "testSuggestion1",
+        name: "Test Suggestion 1"
+    },
+    {
+        id: "testSuggestion2",
+        name: "Test Suggestion 2"
+    }
+];
+
 describe("TypeAheadDropdown", () => {
     it("should render with the expected markup", () => {
         const mockOnSelect = jest.fn();
@@ -50,7 +61,7 @@ describe("TypeAheadDropdown", () => {
         expect(mockOnSearch).toBeCalledWith("test");
     });
 
-    it("should call on search when the input value is changed", () => {
+    it("should call on search when the input value is changed, and call on select when a suggestion is clicked", () => {
         const mockOnSelect = jest.fn();
         const mockOnSearch = jest.fn();
 
@@ -76,16 +87,7 @@ describe("TypeAheadDropdown", () => {
 
         rerender(
             <TypeAheadDropdown
-                suggestions={[
-                    {
-                        id: "testSuggestion1",
-                        name: "Test Suggestion 1"
-                    },
-                    {
-                        id: "testSuggestion2",
-                        name: "Test Suggestion 2"
-                    }
-                ]}
+                suggestions={mockSuggestions}
                 name="typeahead-test"
                 renderSuggestion={(suggestion) => <div data-testid={`suggestion-${suggestion.id}`}>{suggestion.name}</div>}
                 onSelect={mockOnSelect}
@@ -100,7 +102,10 @@ describe("TypeAheadDropdown", () => {
 
         fireEvent.click(suggestion1);
 
-        expect();
+        expect(mockOnSelect).toBeCalledWith({
+            name: "typeahead-test",
+            value: mockSuggestions[0],
+        });
         getByTestId("selected-suggestion");
         expect(queryByTestId("typeahead-suggestion-list")).toBeNull();
     });
