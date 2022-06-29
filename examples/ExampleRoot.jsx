@@ -1,10 +1,9 @@
 import React, { useRef, useState } from "react";
 import PropTypes from "prop-types";
-import { Input, QuickSearchTypeAhead, AsyncSearchTypeAhead, useFormHandlers } from "../src"; // @swordsweeper/react-forms
+import { Input, QuickSearchTypeAhead, AsyncSearchTypeAhead, useFormHandlers, ButtonMultiSelect } from "../src"; // @swordsweeper/react-forms
 import styles from "./ExampleRoot.scss";
 import classnames from "classnames";
 import map from "lodash/map";
-import ButtonMultiSelect from "../src/ButtonMultiSelect";
 import ComponentExampleMapping from "./ComponentExampleMapping";
 
 const mockOptions = [
