@@ -166,11 +166,8 @@ export default function ExampleRoot(props) {
                         defaultClassName={styles.buttonDefault}
                         activeClassName={styles.buttonActive}
                     />
-                    <pre>
-                        {JSON.stringify(formData)}
-                    </pre>
 
-                    <ComponentPropTypes
+                    <ComponentInformation
                         component={ButtonMultiSelect}
                     />
                 </div>
@@ -179,18 +176,6 @@ export default function ExampleRoot(props) {
                 <div className={styles.componentCard}>
                     <h3>Type Ahead</h3>
                     <h4>Quick Search</h4>
-                    <QuickSearchTypeAhead
-                        label="Shape 1"
-                        name="shape1"
-                        onSelect={handleUpdate}
-                        options={mockOptions}
-                        searchFields={["name", "sides"]}
-                        renderSuggestion={(shape) => `${shape.name} - (${shape.sides} sides)`}
-                    />
-                    <ComponentPropTypes
-                        component={QuickSearchTypeAhead}
-                    />
-
                     <div className={styles.componentCard}>
                         <h3>Type Ahead</h3>
                         <h4>Quick Search</h4>

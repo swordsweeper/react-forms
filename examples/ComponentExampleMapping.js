@@ -12,6 +12,27 @@ export default {
             />
         `
     },
+    ButtonMultiSelect: {
+        exampleCode: `
+            <ButtonMultiSelect
+                value={[]}
+                name="name"
+                onChange={() => {}}
+                options={[{
+                    value: "one",
+                    label: "One"
+                }, {
+                    value: "two",
+                    label: "Two"
+                }, {
+                    value: "three",
+                    label: "Three",
+                }]}
+                defaultClassName="button"
+                activeClassName="active-button"
+            />
+        `
+    },
     QuickSearchTypeAhead: {
         exampleCode: `
             import { QuickSearchTypeAhead } from "@swordsweeper/react-forms";
