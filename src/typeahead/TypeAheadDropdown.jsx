@@ -5,9 +5,10 @@ import styles from "./TypeAheadDropdown.scss";
 import map from "lodash/map";
 
 export default function TypeAheadDropdown(props) {
-    const [searchValue, setSearchValue] = useState("");
+    const [searchValue, setSearchValue] = useState(props.initialValue);
     const [showSuggestionList, setShowSuggestionList] = useState(false);
     const [selectedSuggestion, setSelectedSuggestion] = useState(null);
+    const [shouldAutoFocus, setShouldAutoFocus] = useState(false);
     const [focusedSuggestion, setFocusedSuggestion] = useState(null);
     const [isEditingSelection, setIsEditingSelection] = useState(true);
     const [showTop, setShowTop] = useState(false);
@@ -56,8 +57,9 @@ export default function TypeAheadDropdown(props) {
         setFocusedSuggestion(selection);
     };
 
-    const handleSelectSuggestion = (selection) => {
-        setSelectedSuggestion(selection)
+    const handleSetSelection = (selection) => {
+        setSelectedSuggestion(selection);
+        setShouldAutoFocus(true);
         props.onSelect({
             name: props.name,
             value: selection,
@@ -65,12 +67,38 @@ export default function TypeAheadDropdown(props) {
         setIsEditingSelection(false);
     };
 
+    const handleSelectSuggestion = async (selection) => {
+        if (selection.onSelect) {
+            const newOption = await selection.onSelect();
+            if (newOption) {
+                handleSetSelection(newOption);
+            }
+        } else {
+            handleSetSelection(selection);
+        }
+    };
+
+    const handleClearSelection = () => {
+        setSelectedSuggestion(null);
+        setSearchValue("");
+        props.onSelect({
+            name: props.name,
+            value: "",
+        });
+        if (inputRef.current) {
+            inputRef.current.focus();
+        } else {
+            setShouldAutoFocus(true);
+        }
+        props.onSearch("");
+    };
+
     const handleSearchValueChanged = (e) => {
         const { value } = e.target;
         setSearchValue(value);
         props.onSearch(value);
-
         setSelectedSuggestion(null);
+        setShouldAutoFocus(false);
     };
 
     const handleCheckEnterPress = (e) => {
@@ -82,11 +110,23 @@ export default function TypeAheadDropdown(props) {
         }
     };
 
+    const clearSelectionButton = (
+        <button
+            className={styles.clearSelectionButton}
+            onClick={handleClearSelection}
+            type="button"
+            title="Clear Selection"
+        >
+            <i className="fas fa-times" />
+        </button>
+    );
+
     return (
         <div
             className={classnames(styles.typeAheadRoot, {[styles.invalid]: props.invalid})}
             onClick={(e) => e.stopPropagation()}
             ref={rootRef}
+            id={props.id}
         >
             {props.label && (
                 <label data-testid="label">
@@ -99,6 +139,7 @@ export default function TypeAheadDropdown(props) {
                     className={styles.selectedSuggestion}
                 >
                     {props.renderSuggestion(selectedSuggestion)}
+                    {clearSelectionButton}
                 </div>
             ) : (
                 <div onKeyDown={handleCheckEnterPress}>
@@ -108,10 +149,11 @@ export default function TypeAheadDropdown(props) {
                             value={searchValue}
                             data-testid="type-ahead-dropdown-input"
                             onChange={handleSearchValueChanged}
-                            autoFocus={props.autoFocus || selectedSuggestion}
+                            autoFocus={props.autoFocus || shouldAutoFocus}
                             onFocus={handleFocus}
                             placeholder={props.placeholder}
                             type={props.type}
+                            disabled={props.disabled}
                         />
                         <button
                             className={styles.selectButton}
@@ -121,12 +163,15 @@ export default function TypeAheadDropdown(props) {
                         >
                             <i className={classnames("fas fa-chevron-down", styles.selectButtonIcon, {[styles.expanded]: showSuggestionList})} />
                         </button>
+                        {clearSelectionButton}
                     </div>
-
                     {(showSuggestionList && props.suggestions.length > 0) && (
-                        <div className={classnames(styles.suggestionList, {
-                            [styles.top]: showTop,
-                        })}>
+                        <div
+                            className={classnames(styles.suggestionList, {
+                                [styles.top]: showTop,
+                            })}
+                            id={`${props.id}-suggestion-list`}
+                        >
                             {map(props.suggestions, (suggestion) => (
                                 <div
                                     className={styles.suggestionItem}
@@ -135,7 +180,11 @@ export default function TypeAheadDropdown(props) {
                                     tabIndex="0"
                                     onFocus={() => handleSuggestionFocused(suggestion)}
                                 >
-                                    {props.renderSuggestion(suggestion)}
+                                    {suggestion.customRender ? (
+                                        suggestion.customRender(suggestion)
+                                    ) : (
+                                        props.renderSuggestion(suggestion)
+                                    )}
                                 </div>
                             ))}
                         </div>
@@ -150,6 +199,7 @@ TypeAheadDropdown.propTypes = {
     label: PropTypes.string,
     name: PropTypes.string,
     invalid: PropTypes.bool,
+    disabled: PropTypes.bool,
     isRequired: PropTypes.bool,
     autoFocus: PropTypes.bool,
     placeholder: PropTypes.string,
@@ -158,8 +208,12 @@ TypeAheadDropdown.propTypes = {
     renderSuggestion: PropTypes.func.isRequired,
     onSelect: PropTypes.func.isRequired,
     onSearch: PropTypes.func.isRequired,
+    initialValue: PropTypes.string,
+    id: PropTypes.string,
 };
 
 TypeAheadDropdown.defaultProps = {
     type: "text",
+    initialValue: "",
+    id: "type-ahead-dropdown"
 };

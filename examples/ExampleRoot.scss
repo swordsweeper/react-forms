@@ -15,27 +15,80 @@ body, html {
 
 }
 
-.root {
+.card {
+  background-color: white;
   padding: 1rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.root {
   display: flex;
-  flex-direction: column;
+  padding: 1rem;
+  max-height: 100%;
 
-  .componentCard {
-    background-color: white;
-    padding: 1rem;
-    border-radius: 4px;
-    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.25);
-    flex: none;
-    width: 50%;
+  .componentsRoot {
+    flex: 2;
+    margin-right: 0.5em;
+    display: flex;
+    flex-direction: column;
+    max-height: 100%;
+    overflow-y: auto;
 
-    &:not(:last-child) {
-      margin-bottom: 1rem;
+    .componentCard {
+      @extend .card;
+      flex: none;
+
+      &:not(:last-child) {
+        margin-bottom: 1rem;
+      }
+
+      h3 {
+        margin-top: 0;
+        color: rgb(89, 89, 129);
+      }
     }
 
-    h3 {
-      margin-top: 0;
-      color: rgb(89, 89, 129)
+    .usageBlock {
+      background-color: darken(white, 5%);
+      padding: 0.5em;
+      display: flex;
+      margin-top: 0.5em;
+
+      div {
+        flex: 1;
+      }
+
+      .copyToClipboardButton {
+        margin-left: 0.5em;
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+        color: rgb(89, 128, 129);
+
+        &:hover {
+          color: lighten(rgb(89, 128, 129), 5%);
+          transform: scale(1.1);
+        }
+      }
+
+      .textCopied {
+        margin-left: 0.5em;
+        color: green;
+      }
+      
+      .usageHeader {
+        display: flex;
+      }
     }
+  }
+
+  .formDataCard {
+    @extend .card;
+    flex: 1;
+    margin-left: 0.5em;
+    position: sticky;
+    top: 0;
+    height: auto;
   }
 }
 

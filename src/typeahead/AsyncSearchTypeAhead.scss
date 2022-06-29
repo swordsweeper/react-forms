@@ -7,8 +7,30 @@
   }
 }
 
+.addOptionContainer {
+  display: flex;
+  align-items: center;
+
+  .searchTerm {
+    font-style: italic;
+  }
+
+  .addOptionLoader {
+    margin-left: 0.5em;
+    animation: spin 1.5s infinite linear;
+  }
+}
+
 @keyframes shimmer {
   100% {
     -webkit-mask-position: left;
+  }
+}
+
+@keyframes spin { 
+  from { 
+      transform: rotate(0deg); 
+  } to { 
+      transform: rotate(360deg); 
   }
 }

@@ -45,6 +45,7 @@ QuickSearchTypeAhead.propTypes = {
     label: PropTypes.string,
     name: PropTypes.string,
     invalid: PropTypes.bool,
+    disabled: PropTypes.bool,
     isRequired: PropTypes.bool,
     autoFocus: PropTypes.bool,
     placeholder: PropTypes.string,
@@ -56,6 +57,8 @@ QuickSearchTypeAhead.propTypes = {
         PropTypes.arrayOf(PropTypes.string),
     ]).isRequired,
     onSelect: PropTypes.func.isRequired,
+    initialValue: PropTypes.string,
+    id: PropTypes.string,
 };
 
 QuickSearchTypeAhead.defaultProps = {
