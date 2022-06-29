@@ -5,6 +5,7 @@ import QuickSearchTypeAhead from "../src/typeahead/QuickSearchTypeAhead";
 import AsyncSearchTypeAhead from "../src/typeahead/AsyncSearchTypeAhead";
 import styles from "./ExampleRoot.scss";
 import map from "lodash/map";
+import ButtonMultiSelect from "../src/ButtonMultiSelect";
 
 const mockOptions = [
     {
@@ -97,6 +98,36 @@ export default function ExampleRoot(props) {
                     component={Input}
                 />
             </div>
+
+            <div className={styles.componentCard}>
+                <h3>ButtonMultiSelect</h3>
+                <ButtonMultiSelect
+                    name="roles"
+                    label="roles"
+                    value={formData.roles}
+                    onChange={handleUpdate}
+                    options={[{
+                        value: "admin",
+                        label: "Administrator",
+                    }, {
+                        value: "staff",
+                        label: "Staff"
+                    }, {
+                        value: "external",
+                        label: "External User"
+                    }]}
+                    defaultClassName={styles.buttonDefault}
+                    activeClassName={styles.buttonActive}
+                />
+                <pre>
+                    {JSON.stringify(formData)}
+                </pre>
+
+                <ComponentPropTypes
+                    component={ButtonMultiSelect}
+                />
+            </div>
+
 
             <div className={styles.componentCard}>
                 <h3>Type Ahead</h3>
