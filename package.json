@@ -1,7 +1,7 @@
 {
   "name": "@swordsweeper/react-forms",
   "version": "0.0.8",
-  "main": "./dist/react-forms.bundle.js",
+  "main": "./src/index.js",
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
