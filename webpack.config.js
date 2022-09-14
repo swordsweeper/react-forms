@@ -14,10 +14,12 @@ module.exports = {
         "react-forms": path.resolve(sourcePath, "index"),
     },
     output: {
-        filename: "[name].bundle.js",
+        filename: "react-forms.bundle.js",
         path: outputPath,
         library: packageJson.name,
         libraryTarget: "umd",
+        umdNamedDefine: true,
+        globalObject: "this"
     },
     module: {
         rules: [
