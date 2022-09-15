@@ -16,9 +16,9 @@
   "license": "ISC",
   "repository": "https://github.com/swordsweeper/react-forms",
   "peerDependencies": {
-    "react": "^16.14.0",
-    "react-dom": "^16.14.0",
-    "prop-types": "^15.7.2"
+    "react": ">16.14.0",
+    "react-dom": ">16.14.0",
+    "prop-types": ">15.7.2"
   },
   "dependencies": {
     "classnames": "^2.3.1",
