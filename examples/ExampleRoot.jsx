@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import PropTypes from "prop-types";
-import { Input, QuickSearchTypeAhead, AsyncSearchTypeAhead, useFormHandlers, ButtonMultiSelect } from "../src"; // @swordsweeper/react-forms
+import { Input, QuickSearchTypeAhead, AsyncSearchTypeAhead, useFormHandlers, ButtonMultiSelect, TextArea } from "../src"; // @swordsweeper/react-forms
 import styles from "./ExampleRoot.scss";
 import classnames from "classnames";
 import map from "lodash/map";
@@ -141,6 +141,18 @@ export default function ExampleRoot(props) {
                     />
                     <ComponentInformation
                         component={Input}
+                    />
+                </div>
+                <div className={styles.componentCard}>
+                    <h3>Text Area</h3>
+                    <TextArea
+                        name="longDescription"
+                        label="longDescription"
+                        value={formData.longDescription}
+                        onChange={handleUpdate}
+                    />
+                    <ComponentInformation 
+                        component={TextArea}
                     />
                 </div>
 

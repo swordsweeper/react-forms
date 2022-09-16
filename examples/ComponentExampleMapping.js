@@ -12,6 +12,18 @@ export default {
             />
         `
     },
+    TextArea: {
+        exampleCode: `
+            import { TextArea } from "@swordsweeper/react-forms";
+
+            <TextArea
+                name="longDescription"
+                label="longDescription"
+                value={formData.longDescription}
+                onChange={handleUpdate}
+            />
+        `
+    },
     ButtonMultiSelect: {
         exampleCode: `
             <ButtonMultiSelect
