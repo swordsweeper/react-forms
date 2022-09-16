@@ -7,7 +7,7 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage --verbose",
     "build:dev": "NODE_ENV=development webpack",
-    "build": "NODE_ENV=production webpack --display-error-details -p",
+    "build": "webpack --display-error-details",
     "start": "NODE_ENV=development webpack-dev-server --config examples/webpack.config.js --hot",
     "prepare": "npm run build"
   },
